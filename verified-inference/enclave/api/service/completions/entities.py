@@ -7,8 +7,9 @@ from typing import cast
 
 from openai._utils import async_maybe_transform
 from openai.types.chat import ChatCompletion as OpenAiChatCompletion
-from openai.types.chat import CompletionCreateParams
+from openai.types.chat import CompletionCreateParams as OpenAiCompletionCreateParams
 from openai.types.chat import completion_create_params
+from anthropic.types.completion_create_params import CompletionCreateParams as AnthropicCompletionCreateParams
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -209,7 +210,48 @@ class ChatCompletionRequest(BaseModel):
             }
         }
 
-    async def to_openai_chat_completion(self) -> CompletionCreateParams:
+    async def to_openai_chat_completion(self) -> OpenAiCompletionCreateParams:
+        try:
+            dict_input = {
+                "messages": self.messages,
+                "model": self.model,
+                "frequency_penalty": self.frequency_penalty,
+                # "function_call": self.function_call,
+                # "functions": self.functions,
+                "logit_bias": self.logit_bias,
+                "logprobs": self.logprobs,
+                "max_tokens": self.max_tokens,
+                # lmdeploy doesn't like this param
+                # "n": self.n,
+                # "parallel_tool_calls": self.parallel_tool_calls,
+                "presence_penalty": self.presence_penalty,
+                "response_format": self.response_format,
+                "seed": self.seed,
+                # "service_tier": self.service_tier,
+                "stop": self.stop,
+                "stream": self.stream,
+                "stream_options": self.stream_options,
+                "temperature": self.temperature,
+                "top_logprobs": self.top_logprobs,
+                "top_p": self.top_p,
+                "user": self.user,
+            }
+            # vllm (at least <=0.6.3.post1) does not support the "tool_choice" field
+            # even if the dict has it as "None" then vllm will return an error
+            if self.tool_choice:
+                dict_input["tool_choice"] = self.tool_choice  # type: ignore
+            if self.tools:
+                dict_input["tools"] = self.tools
+            result = await async_maybe_transform(
+                dict_input,
+                OpenAiCompletionCreateParams
+            )
+            return cast(OpenAiCompletionCreateParams, result)
+        except Exception as e:
+            print("Failed to convert input to openAI CompletionCreateParams")
+            raise e
+    
+    async def to_anthropic_chat_completion(self) -> AnthropicCompletionCreateParams:
         try:
             dict_input = {
                 "messages": self.messages,
@@ -262,3 +304,6 @@ class ChatCompletion(OpenAiChatCompletion):
     attestation: str = Field(
         description="The attestation document.",
     )
+
+class AnthropicChatCompletionRequest(AnthropicChatCompletion):
+
