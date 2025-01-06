@@ -128,17 +128,17 @@ For example, you can see the full implementation in action with [Daige](https://
 ### **SDK**
 Proof of Sentience SDKs.
 
-1. [Python SDK](https://github.com/galadriel-ai/sentience/blob/karl-copy/sdk/python)
+1. [Python SDK](https://github.com/galadriel-ai/sentience/tree/main/sdk/python)
 2. [Javascript SDK](https://github.com/galadriel-ai/sentience/tree/main/sdk/js)
 
 ### **Verified inference**
 
 Underlying TEE architecture that powers Proof of Sentience.
 
-1. [enclave](https://github.com/galadriel-ai/sentience/blob/karl-copy/verified-inference/enclave) - this where the enclave is built and run
-2. [host](https://github.com/galadriel-ai/sentience/blob/karl-copy/verified-inference/host) - proxies HTTP requests to the API running in the enclave
-3. [solana-attestation-contract](https://github.com/galadriel-ai/sentience/blob/karl-copy/verified-inference/solana-attestation-contract) - posts proofs of inference responses to Solana
-4. [verify](https://github.com/galadriel-ai/sentience/blob/karl-copy/verified-inference/verify) - instructions and code for verifying the TEE
+1. [enclave](https://github.com/galadriel-ai/sentience/tree/main/verified-inference/enclave) - this where the enclave is built and run
+2. [host](https://github.com/galadriel-ai/sentience/tree/main/verified-inference/host) - proxies HTTP requests to the API running in the enclave
+3. [solana-attestation-contract](https://github.com/galadriel-ai/sentience/tree/main/verified-inference/solana-attestation-contract) - posts proofs of inference responses to Solana
+4. [verify](https://github.com/galadriel-ai/sentience/tree/main/verified-inference/verify) - instructions and code for verifying the TEE
 
 ## **Getting help**
 
