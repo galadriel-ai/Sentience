@@ -6,7 +6,7 @@ from service.tee.entities import TeeDeploymentResponse
 from repository.enclave_repository import EnclaveRepository, EnclaveState
 
 TEE_CPU_COUNT = 2
-TEE_MEMORY_IN_MB = 2048
+TEE_MEMORY_IN_MB = 8192
 
 
 async def execute(

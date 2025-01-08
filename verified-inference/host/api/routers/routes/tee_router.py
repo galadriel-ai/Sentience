@@ -6,7 +6,11 @@ from fastapi import HTTPException
 from fastapi import Request
 
 import dependencies
-from service.tee.entities import TeeAttestationResponse, TeeDeploymentRequest, TeeDeploymentResponse
+from service.tee.entities import (
+    TeeAttestationResponse,
+    TeeDeploymentRequest,
+    TeeDeploymentResponse,
+)
 from service.tee import tee_deploy_service, tee_attestation_service
 
 TAG = "TEE"

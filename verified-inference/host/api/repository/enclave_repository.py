@@ -40,12 +40,10 @@ class EnclaveRepository:
 
     def add_enclave(self, enclave_cid: str, enclave_name: str, state: EnclaveState):
         self._enclaves[enclave_cid] = Enclave(enclave_cid, state)
-        self._start_enclave_proxy(enclave_cid)
         print(f"Enclave {enclave_cid} added to repository")
 
     def remove_enclave(self, enclave_cid: str):
         if enclave_cid in self._enclaves:
-            self._stop_enclave_proxy(self._enclaves[enclave_cid])
             del self._enclaves[enclave_cid]
             print(f"Enclave {enclave_cid} removed from repository")
         else:

@@ -16,11 +16,16 @@ async def execute(enclave_cid: str) -> TeeAttestationResponse:
         # Send a request for the attestation document
         vsock.sendall(GET_ATTESTATION_REQUEST.encode())
 
+        # Set a timeout for the response
+        vsock.settimeout(5)
+
         # Receive the attestation document
         response = vsock.recv(BUFFER_SIZE)
 
         return response.decode()
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Error getting attestation: {str(e)}")
+        raise HTTPException(
+            status_code=503, detail=f"Error getting attestation: {str(e)}"
+        )
     finally:
         vsock.close()
