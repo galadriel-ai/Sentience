@@ -2,13 +2,12 @@ import re
 
 from fastapi import APIRouter
 from fastapi import Depends
-from fastapi import Header
 from fastapi import HTTPException
 from fastapi import Request
 
 import dependencies
-from service.tee.entities import TeeDeploymentRequest, TeeDeploymentResponse
-from service.tee import tee_deploy_service
+from service.tee.entities import TeeAttestationResponse, TeeDeploymentRequest, TeeDeploymentResponse
+from service.tee import tee_deploy_service, tee_attestation_service
 
 TAG = "TEE"
 router = APIRouter(prefix="/tee")
@@ -33,3 +32,17 @@ async def deploy(
         request.docker_hub_image,
         enclave_repository,
     )
+
+
+@router.get(
+    "/attestation",
+    summary="Get the attestation document for the enclave.",
+    description="Get the attestation document for the enclave.",
+    response_description="Returns the attestation document",
+    response_model=TeeAttestationResponse,
+)
+async def attestation(
+    api_request: Request,
+    enclave_cid: str,
+):
+    return await tee_attestation_service.execute(enclave_cid)

@@ -12,3 +12,7 @@ class TeeDeploymentRequest(BaseModel):
 
 class TeeDeploymentResponse(BaseModel):
     result: str = Field(description="Deployment result")
+
+
+class TeeAttestationResponse(BaseModel):
+    attestation: str = Field(description="Attestation document")
