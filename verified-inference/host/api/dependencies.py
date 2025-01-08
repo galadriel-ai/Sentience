@@ -1,5 +1,7 @@
 from repository.enclave_repository import EnclaveRepository
 
+enclave_repository: EnclaveRepository
+
 
 # pylint: disable=W0603
 def init_globals():

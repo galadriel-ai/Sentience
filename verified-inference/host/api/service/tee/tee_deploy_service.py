@@ -10,7 +10,10 @@ TEE_MEMORY_IN_MB = 2048
 
 
 async def execute(
-    name: str, version: str, docker_hub_image: str, enclave_repository: EnclaveRepository
+    name: str,
+    version: str,
+    docker_hub_image: str,
+    enclave_repository: EnclaveRepository,
 ) -> TeeDeploymentResponse:
     enclave_eif_name = generate_eif_name(name, version)
     build_result = build_enclave(enclave_eif_name, docker_hub_image)
@@ -31,7 +34,11 @@ async def execute(
 def run_command(command: list) -> str:
     try:
         result = subprocess.run(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:

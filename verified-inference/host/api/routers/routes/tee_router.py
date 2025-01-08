@@ -28,5 +28,8 @@ async def deploy(
     enclave_repository=Depends(dependencies.get_enclave_repository),
 ):
     return await tee_deploy_service.execute(
-        request.enclave_name, request.enclave_version, request.docker_hub_image, enclave_repository
+        request.enclave_name,
+        request.enclave_version,
+        request.docker_hub_image,
+        enclave_repository,
     )

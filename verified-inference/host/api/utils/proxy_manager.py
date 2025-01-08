@@ -23,8 +23,12 @@ async def forward_data(reader, writer):
 
 async def handle_client(cid, reader, writer):
     try:
-        vsock_reader, vsock_writer = await asyncio.open_connection("localhost", VSOCK_PORT)
-        await asyncio.gather(forward_data(reader, vsock_writer), forward_data(vsock_reader, writer))
+        vsock_reader, vsock_writer = await asyncio.open_connection(
+            "localhost", VSOCK_PORT
+        )
+        await asyncio.gather(
+            forward_data(reader, vsock_writer), forward_data(vsock_reader, writer)
+        )
     except Exception as e:
         print(f"Error handling client: {e}")
     finally:
@@ -33,9 +37,13 @@ async def handle_client(cid, reader, writer):
 
 
 async def run_proxy_service(cid: str):
-    server = await asyncio.start_server(lambda r, w: handle_client(cid, r, w), HOST, PORT)
+    server = await asyncio.start_server(
+        lambda r, w: handle_client(cid, r, w), HOST, PORT
+    )
 
-    print(f"Proxy listening on {HOST}:{PORT}, forwarding to enclave {cid} port {VSOCK_PORT}")
+    print(
+        f"Proxy listening on {HOST}:{PORT}, forwarding to enclave {cid} port {VSOCK_PORT}"
+    )
 
     async with server:
         await server.serve_forever()
