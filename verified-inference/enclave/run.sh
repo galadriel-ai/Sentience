@@ -7,8 +7,6 @@ ip link set dev lo up
 
 # Add a hosts record, pointing target site calls to local loopback
 echo "127.0.0.1   api.openai.com" >> /etc/hosts
-echo "127.0.0.1   api.mainnet-beta.solana.com" >> /etc/hosts
-echo "127.0.0.1   api.devnet.solana.com" >> /etc/hosts
 
 #mkdir -p /run/resolvconf
 #echo "nameserver 127.0.0.1" > /run/resolvconf/resolv.conf
