@@ -6,6 +6,7 @@ authors = [
     "Kaspar Peterson <kaspar@galadriel.com>",
     "Kristjan Peterson <kristjan@galadriel.com>",
     "Krešimir Grofelnik <kresimir@galadriel.com>",
+    "Isaac Reis <isaac@galadriel.com>",
 ]
 readme = "README.md"
 
@@ -14,6 +15,8 @@ python = "^3.10"
 openai = "^1.55.3"
 pynacl = "^1.5.0"
 requests = "2.31.0"
+click = { version = "^8.1.7"}
+python-dotenv = "^1.0.1"
 black = { version = "^24.8.0", optional = true }
 pytest = { version = "^8.3.2", optional = true }
 pytest-asyncio = { version = "0.24.0", optional = true }
@@ -28,8 +31,8 @@ dev = ["black", "pytest", "pytest-asyncio", "pytest-mock", "twine", "build"]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-#[tool.poetry.scripts]
-# galadriel = "galadriel_node.cli.app:app"
+[tool.poetry.scripts]
+sentience = "cli:main"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
