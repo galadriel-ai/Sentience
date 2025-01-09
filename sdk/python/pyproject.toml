@@ -32,7 +32,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-sentience = "cli:main"
+sentience = "agent.cli:main"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
