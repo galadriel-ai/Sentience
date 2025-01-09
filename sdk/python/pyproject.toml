@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sentience"
-version = "0.0.2"
+version = "0.0.3"
 description = ""
 authors = [
     "Kaspar Peterson <kaspar@galadriel.com>",
@@ -17,7 +17,13 @@ pynacl = "^1.5.0"
 requests = "2.31.0"
 click = { version = "^8.1.7"}
 python-dotenv = "^1.0.1"
+aiohttp = "^3.10.5"
+requests-oauthlib = "^2.0.0"
+aiofiles = "^24.1.0"
+rich = "^13.9.4"
 black = { version = "^24.8.0", optional = true }
+mypy = { version = "^1.11.2", optional = true }
+pylint = { version = "^3.2.7", optional = true }
 pytest = { version = "^8.3.2", optional = true }
 pytest-asyncio = { version = "0.24.0", optional = true }
 pytest-mock = { version = "^3.14.0", optional = true }
@@ -25,14 +31,14 @@ twine = { version = "^5.1.1", optional = true }
 build = { version = "^1.2.2", optional = true }
 
 [tool.poetry.extras]
-dev = ["black", "pytest", "pytest-asyncio", "pytest-mock", "twine", "build"]
+dev = ["black", "mypy", "pylint", "pytest", "pytest-asyncio", "pytest-mock", "twine", "build"]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-sentience = "agent.cli:main"
+sentience = "sentience.cli:main"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

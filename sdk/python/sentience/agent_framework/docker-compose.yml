@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  agent:
+    env_file:
+      - .env
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./logs:/home/appuser/logs
+      - ./data:/home/appuser/data
+    command: python main.py
+    restart: unless-stopped

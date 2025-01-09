@@ -1,0 +1,8 @@
+/home/appuser/logs/logs.log {
+hourly
+maxsize 100M
+copytruncate
+rotate 1
+missingok
+notifempty
+}

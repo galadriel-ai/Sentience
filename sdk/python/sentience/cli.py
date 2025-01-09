@@ -103,9 +103,16 @@ def deploy(image_name: str) -> None:
 def get_agent_state(agent_id: str):
     """Get information about a deployed agent from Galadriel platform."""
     try:
+        api_key = os.getenv("GALADRIEL_API_KEY")
+        if not api_key:
+            raise click.ClickException("GALADRIEL_API_KEY not found in environment")
+
         response = requests.get(
-            f"https://api.galadriel.com/agent/{agent_id}",
-            headers={"Content-Type": "application/json"},
+            f"https://api.galadriel.com/agents/{agent_id}",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            },
         )
 
         if not response.status_code == 200:
@@ -118,25 +125,28 @@ def get_agent_state(agent_id: str):
 
 
 @click.command()
-def get_agent_ids():
-    """Get list of agent IDs for the current Galadriel user."""
+def get_all_agent_states():
+    """Get all agent states"""
     try:
-        galadriel_key = os.getenv("GALADRIEL_API_KEY")
-        if not galadriel_key:
-            raise click.ClickException("GALADRIEL_KEY environment variable not set")
+        api_key = os.getenv("GALADRIEL_API_KEY")
+        if not api_key:
+            raise click.ClickException("GALADRIEL_API_KEY not found in environment")
 
         response = requests.get(
-            f"https://api.galadriel.com/agent/{galadriel_key}",
-            headers={"Content-Type": "application/json"},
+            f"https://api.galadriel.com/agents/",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            },
         )
+
         if not response.status_code == 200:
             click.echo(
-                f"Failed to get agent IDs with status {response.status_code}: {response.text}"
+                f"Failed to get agent state with status {response.status_code}: {response.text}"
             )
-
         click.echo(json.dumps(response.json(), indent=2))
     except Exception as e:
-        click.echo(f"Failed to get agent IDs: {str(e)}")
+        click.echo(f"Failed to get agent state: {str(e)}")
 
 
 def _assert_config_files(image_name: str) -> Tuple[str, str]:
@@ -159,46 +169,110 @@ def _assert_config_files(image_name: str) -> Tuple[str, str]:
 def _create_agent_template(
     agent_name: str, docker_username: str, docker_password: str, galadriel_api_key: str
 ) -> None:
-    """Download and extract the template repository files in the current directory."""
-    # TODO: maybe fork the repo instead of downloading the zip file so the user can source control their changes (?)
-    zip_url = (
-        "https://github.com/galadriel-ai/galadriel-agent/archive/refs/heads/main.zip"
-    )
+    """
+    Generates the Python code and directory structure for a new Galadriel agent.
 
-    # Download the zip file
-    response = requests.get(zip_url, timeout=30)
-    response.raise_for_status()
+    Args:
+        agent_name: The name of the agent (e.g., "my_daige").
+    """
 
-    # Extract contents to current directory
-    with ZipFile(BytesIO(response.content)) as zip_file:
-        root_dir = zip_file.namelist()[0]
-        for file in zip_file.namelist()[1:]:
-            relative_path = file[len(root_dir) :]
-            if relative_path:
-                if relative_path == "agents/agent.json" and agent_name:
-                    # Update the agent json file name and "name" field within the file
-                    with zip_file.open(file) as source:
-                        agent_json = json.load(source)
-                        agent_json["name"] = agent_name
-                        relative_path = f"agents/{agent_name}.json"
-                        os.makedirs(os.path.dirname(relative_path), exist_ok=True)
-                        with open(relative_path, "w") as f:
-                            json.dump(agent_json, f, indent=2)
-                    continue
+    # Create directories
+    agent_dir = os.path.join(agent_name, "agent")
+    agent_configurator_dir = os.path.join(agent_name, "agent_configurator")
+    docker_dir = os.path.join(agent_name, "docker")
+    os.makedirs(agent_dir, exist_ok=True)
+    os.makedirs(agent_configurator_dir, exist_ok=True)
+    os.makedirs(docker_dir, exist_ok=True)
 
-                if file.endswith("/"):
-                    os.makedirs(relative_path.rstrip("/"), exist_ok=True)
-                else:
-                    with zip_file.open(file) as source:
-                        with open(relative_path, "wb") as target:
-                            shutil.copyfileobj(source, target)
+    # Generate <agent_name>.py
+    class_name = "".join(word.capitalize() for word in agent_name.split("_"))
+    agent_code = f"""from sentience import GaladrielAgent
+
+class {class_name}(GaladrielAgent):
+    def run(self):
+        # Implement your agent's logic here
+        print(f"Running {class_name} with agent configuration: {{self.agent_config}}")
+"""
+    with open(os.path.join(agent_dir, f"{agent_name}.py"), "w") as f:
+        f.write(agent_code)
+
+    # Generate <agent_name>.json
+    initial_data = {
+        "name": class_name,
+        "description": "A brief description of your agent",
+        "prompt": "The initial prompt for the agent",
+        "tools": [],
+    }
+    with open(os.path.join(agent_configurator_dir, f"{agent_name}.json"), "w") as f:
+        json.dump(initial_data, f, indent=2)
+
+    # generate main.py
+    main_code = f"""from agent.{agent_name} import {class_name}
+
+if __name__ == "__main__":
+    agent = {class_name}(agent_name={agent_name})
+    asyncio.run(agent.run())
+"""
+    with open(os.path.join(agent_name, "main.py"), "w") as f:
+        f.write(main_code)
+
+    # Generate test.py
+    test_code = f"""from agent.{agent_name} import {class_name}
+from sentience import GaladrielAgent 
+
+def main():
+    agent = GaladrielAgent(agent_name={agent_name})
+    agent.run()
+
+if __name__ == "__main__":
+    main()
+"""
+    with open(os.path.join(agent_name, "test.py"), "w") as f:
+        f.write(test_code)
+
+    # Generate pyproject.toml
+    pyproject_toml = f"""
+[tool.poetry]
+name = "agent"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sentience = "^0.0.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+"""
+    with open(os.path.join(agent_name, "pyproject.toml"), "w") as f:
+        f.write(pyproject_toml)
 
     # Create .env file in the agent directory
     env_content = f"""DOCKER_USERNAME={docker_username}
 DOCKER_PASSWORD={docker_password}
 GALADRIEL_API_KEY={galadriel_api_key}"""
-    with open(".env", "w") as f:
+    with open(os.path.join(agent_name, ".env"), "w") as f:
         f.write(env_content)
+
+    # copy docker files from sentience/agent_framework/docker to user current directory
+    docker_files_dir = os.path.join(
+        os.path.dirname(__file__), "agent_framework", "docker"
+    )
+    docker_compose_file = os.path.join(os.path.dirname(__file__), "agent_framework")
+    shutil.copy(
+        os.path.join(docker_compose_file, "docker-compose.yml"),
+        os.path.join(agent_name, "docker-compose.yml"),
+    )
+    shutil.copy(
+        os.path.join(docker_files_dir, "Dockerfile"),
+        os.path.join(docker_dir, "Dockerfile"),
+    )
+    shutil.copy(
+        os.path.join(docker_files_dir, "logrotate_logs"),
+        os.path.join(docker_dir, "logrotate_logs"),
+    )
 
 
 def _build_image(docker_username: str) -> None:
