@@ -1,7 +1,8 @@
+from typing import Dict
 from repository import nitro_cli_repository
 
 
-async def execute(name: str, docker_hub_image: str) -> str:
+async def execute(name: str, docker_hub_image: str) -> Dict:
     build_result = nitro_cli_repository.build_enclave(name, docker_hub_image)
     print(f"Enclave built: {build_result}")
 
