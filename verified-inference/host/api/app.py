@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-import dependencies
 from routers import main_router
 
-dependencies.init_globals()
 
 app = FastAPI()
 
