@@ -8,4 +8,6 @@ async def execute(name: str) -> TeeAttestationResponse:
         result = await request_attestation_from_enclave_use_case.execute(name)
         return TeeAttestationResponse(result=result)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error attesting enclave: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error attesting enclave: {str(e)}"
+        )

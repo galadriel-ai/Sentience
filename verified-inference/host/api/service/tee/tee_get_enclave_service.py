@@ -9,8 +9,12 @@ async def execute(name: str) -> TeeGetEnclaveResponse:
         if name in enclaves:
             enclave = enclaves[name]
             return TeeGetEnclaveResponse(
-                enclave_name=enclave.name, enclave_cid=enclave.cid, state=enclave.state.value
+                enclave_name=enclave.name,
+                enclave_cid=enclave.cid,
+                state=enclave.state.value,
             )
         raise HTTPException(status_code=404, detail=f"Enclave {name} not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deploying enclave: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error deploying enclave: {str(e)}"
+        )

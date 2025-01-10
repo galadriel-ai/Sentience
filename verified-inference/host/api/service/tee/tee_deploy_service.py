@@ -11,4 +11,6 @@ async def execute(
         result = await deploy_enclave_use_case.execute(name, docker_hub_image)
         return TeeDeploymentResponse(result=result)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deploying enclave: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error deploying enclave: {str(e)}"
+        )

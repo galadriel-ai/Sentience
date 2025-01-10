@@ -12,4 +12,6 @@ async def execute(
 
         return TeeTerminateResponse(result=result)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error terminating enclave: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error terminating enclave: {str(e)}"
+        )
