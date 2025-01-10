@@ -8,6 +8,6 @@ async def execute(enclave_name: str) -> str:
         raise Exception(f"Enclave {enclave_name} not found")
 
     enclave = enclaves[enclave_name]
-    response = await vsock_repository.request_attestation_from_enclave(enclave.cid)
+    response = await vsock_repository.request_attestation(enclave.cid)
 
     return response

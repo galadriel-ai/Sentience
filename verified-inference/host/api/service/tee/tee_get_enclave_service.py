@@ -11,7 +11,7 @@ async def execute(name: str) -> TeeGetEnclaveResponse:
             return TeeGetEnclaveResponse(
                 enclave_name=enclave.name,
                 enclave_cid=enclave.cid,
-                state=enclave.state.value,
+                enclave_status=enclave.state.value,
             )
         raise HTTPException(status_code=404, detail=f"Enclave {name} not found")
     except Exception as e:

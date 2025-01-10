@@ -6,7 +6,7 @@ TIMEOUT_IN_SECONDS = 5
 BUFFER_SIZE = 4096
 
 
-async def request_attestation(enclave_cid: int, message: str) -> str:
+async def request_attestation(enclave_cid: int) -> str:
     vsock = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
     try:
         # Connect to the enclave
