@@ -1,4 +1,6 @@
+import json
 import subprocess
+from typing import Dict, List
 
 
 TEE_CPU_COUNT = 2
@@ -20,7 +22,7 @@ def _run_command(command: list) -> str:
         raise e
 
 
-def build_enclave(enclave_name: str, docker_hub_image: str) -> str:
+def build_enclave(enclave_name: str, docker_hub_image: str) -> Dict:
     command = [
         "nitro-cli",
         "build-enclave",
@@ -29,10 +31,11 @@ def build_enclave(enclave_name: str, docker_hub_image: str) -> str:
         "--output-file",
         f"{enclave_name}.eif",
     ]
-    return _run_command(command)
+    res = _run_command(command)
+    return json.loads(res)
 
 
-def run_enclave(enclave_name: str) -> str:
+def run_enclave(enclave_name: str) -> Dict:
     command = [
         "nitro-cli",
         "run-enclave",
@@ -43,22 +46,25 @@ def run_enclave(enclave_name: str) -> str:
         "--eif-path",
         f"{enclave_name}.eif",
     ]
-    return _run_command(command)
+    res = _run_command(command)
+    return json.loads(res)
 
 
-def terminate_enclave(enclave_name: str) -> str:
+def terminate_enclave(enclave_name: str) -> Dict:
     command = [
         "nitro-cli",
         "terminate-enclave",
         "--enclave-name",
         enclave_name,
     ]
-    return _run_command(command)
+    res = _run_command(command)
+    return json.loads(res)
 
 
-def describe_enclaves() -> str:
+def describe_enclaves() -> List[Dict]:
     command = [
         "nitro-cli",
         "describe-enclaves",
     ]
-    return _run_command(command)
+    res = _run_command(command)
+    return json.loads(res)

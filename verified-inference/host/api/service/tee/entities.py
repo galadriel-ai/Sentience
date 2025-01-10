@@ -1,3 +1,4 @@
+from typing import Dict
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -10,7 +11,7 @@ class TeeDeploymentRequest(BaseModel):
 
 
 class TeeDeploymentResponse(BaseModel):
-    result: str = Field(description="Deployment result")
+    result: Dict = Field(description="Deployment result")
 
 
 class TeeTerminateRequest(BaseModel):
@@ -18,7 +19,7 @@ class TeeTerminateRequest(BaseModel):
 
 
 class TeeTerminateResponse(BaseModel):
-    result: str = Field(description="Termination result")
+    result: Dict = Field(description="Termination result")
 
 
 class TeeGetEnclaveResponse(BaseModel):

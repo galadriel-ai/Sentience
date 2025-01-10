@@ -5,8 +5,8 @@ import uvicorn
 
 def main():
     port: int = 5000
-    print(f"Starting Uvicorn on localhost:{port} ...")
-    uvicorn.run("app:app", host="127.0.0.1", port=port)
+    print(f"Starting Uvicorn on {port} ...")
+    uvicorn.run("app:app", host="0.0.0.0", port=port)
 
 
 if __name__ == "__main__":
