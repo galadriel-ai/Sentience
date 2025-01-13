@@ -1,4 +1,5 @@
 const OpenAI = require('openai');
+const Sentience = require('../sentience.min');
 
 const client = new OpenAI({
     apiKey: process.env['GALADRIEL_API_KEY'], // This is the default and can be omitted
@@ -10,7 +11,9 @@ async function main() {
         messages: [{role: 'user', content: 'Say this is a test'}],
         model: 'gpt-4o',
     });
-    console.log("chatCompletion:", chatCompletion)
+
+    const result = Sentience.verifySignature(chatCompletion)
+    console.log("Signature is valid: " + result)
 }
 
 main();
