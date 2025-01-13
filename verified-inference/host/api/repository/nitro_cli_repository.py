@@ -19,6 +19,7 @@ def _run_command(command: list) -> str:
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {str(e)}")
+        print(f"Logs: {result}")
         raise e
 
 

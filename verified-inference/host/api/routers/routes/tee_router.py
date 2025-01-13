@@ -1,14 +1,11 @@
-import re
-
 from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
 from fastapi import Request
 
 from service.tee.entities import (
     TeeAttestationResponse,
     TeeDeploymentRequest,
     TeeDeploymentResponse,
+    TeeGetEnclavesResponse,
     TeeTerminateRequest,
     TeeTerminateResponse,
     TeeGetEnclaveResponse,
@@ -18,6 +15,7 @@ from service.tee import (
     tee_attestation_service,
     tee_terminate_service,
     tee_get_enclave_service,
+    tee_get_all_enclaves_service,
 )
 
 TAG = "TEE"
@@ -54,6 +52,19 @@ async def terminate(
     request: TeeTerminateRequest,
 ):
     return await tee_terminate_service.execute(request.enclave_name)
+
+
+@router.get(
+    "/enclaves",
+    summary="Get all enclaves.",
+    description="Get all enclaves.",
+    response_description="Returns all enclaves",
+    response_model=TeeGetEnclavesResponse,
+)
+async def enclaves(
+    api_request: Request,
+):
+    return await tee_get_all_enclaves_service.execute()
 
 
 @router.get(
