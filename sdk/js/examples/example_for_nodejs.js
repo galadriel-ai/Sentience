@@ -1,6 +1,6 @@
-console.log('Example for NodeJS:');
+console.log('Example for NodeJS:')
 
-const Sentience = require('../sentience.min.js');
+const Sentience = require('../sentience.min.js')
 
 function verifySignatures() {
     const EXAMPLE_VALID = {
@@ -15,23 +15,19 @@ function verifySignatures() {
         signature: '819218f6ad5a8ec86091afc1dfbecc5d21384d62f1df0c649ab0c351e515e825fda72d124091418b3cc4a3be35b20dd471b8f8447a448712315b19ecaef34206',
     }
     console.log("Sentience.verifySignature(EXAMPLE_VALID):")
-    console.log(Sentience.verifySignature(EXAMPLE_VALID));
+    console.log(Sentience.verifySignature(EXAMPLE_VALID))
 
     console.log("Sentience.verifySignature(EXAMPLE_INVALID_HASH):")
-    console.log(Sentience.verifySignature(EXAMPLE_INVALID_HASH));
+    console.log(Sentience.verifySignature(EXAMPLE_INVALID_HASH))
 }
 
 
-function apiCalls() {
+async function apiCalls() {
     console.log("\n\n==== Get History ====")
-    Sentience.getHistory(process.env.GALADRIEL_API_KEY)
-        .then(data => {
-            console.log("Data:", data)
-        })
-        .catch(error => {
-            console.error("Error:", error)
-        })
+    const history = await Sentience.getHistory(process.env.GALADRIEL_API_KEY)
+    console.log(history)
 }
 
 verifySignatures()
 apiCalls()
+  .then(() => console.log("Done"))

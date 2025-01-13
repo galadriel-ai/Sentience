@@ -1,9 +1,9 @@
 //replace console.log with document.write to make the behavior visible
 console.log = (m) => {
-    document.write(`${m}<br>`);
-};
+    document.write(`${m}<br>`)
+}
 
-import Sentience from '../sentience.min.js';
+import Sentience from '../sentience.min.js'
 
 // TODO:
 const GALADRIEL_API_KEY = "TODO"
@@ -28,19 +28,12 @@ function verifySignatures() {
 }
 
 
-function apiCalls() {
+async function apiCalls() {
     console.log("\n\n==== Get History ====")
-    Sentience.getHistory(GALADRIEL_API_KEY)
-        .then(data => {
-            console.log = (msg) => {
-                document.body.insertAdjacentHTML('beforeend', `${msg}<br>`);
-            };
-            console.log("Data:" + data)
-        })
-        .catch(error => {
-            console.log("Error:" + error)
-        })
+    const history = await Sentience.getHistory(GALADRIEL_API_KEY)
+    document.body.insertAdjacentHTML('beforeend', `${JSON.stringify(history)}<br>`)
 }
 
 verifySignatures()
 apiCalls()
+    .catch(e => document.body.insertAdjacentHTML('beforeend', `${e}<br>`))
