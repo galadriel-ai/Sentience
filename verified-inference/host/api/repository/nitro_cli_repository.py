@@ -16,8 +16,9 @@ def _run_command(command: list) -> str:
             text=True,
             check=True,
         )
-        # Return the combined stdout and stderr for logging purposes
-        return result.stdout + result.stderr
+        if result.stderr:
+            print(f"Error logs: {result.stderr.strip()}")
+        return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {str(e)}")
         raise e
