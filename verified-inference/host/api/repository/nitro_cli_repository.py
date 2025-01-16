@@ -4,7 +4,7 @@ from typing import Dict, List
 
 
 TEE_CPU_COUNT = 2
-TEE_MEMORY_IN_MB = 8192
+TEE_MEMORY_IN_MB = 16384
 
 
 def _run_command(command: list) -> str:
@@ -45,6 +45,7 @@ def run_enclave(enclave_name: str) -> Dict:
         f"{TEE_CPU_COUNT}",
         "--memory",
         f"{TEE_MEMORY_IN_MB}",
+        "--debug-mode",
         "--eif-path",
         f"{enclave_name}.eif",
     ]
