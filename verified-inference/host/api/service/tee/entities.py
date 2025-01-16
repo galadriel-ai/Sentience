@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from pydantic import BaseModel
 from pydantic import Field
@@ -8,6 +9,7 @@ class TeeDeploymentRequest(BaseModel):
     docker_hub_image: str = Field(
         description="Docker Hub image name in the format <repository>:<tag>"
     )
+    env_vars: Dict[str, Any] = Field(description="Environment variables")
 
 
 class TeeDeploymentResponse(BaseModel):
