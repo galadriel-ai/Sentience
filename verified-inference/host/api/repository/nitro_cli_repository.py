@@ -45,7 +45,6 @@ def run_enclave(enclave_name: str) -> Dict:
         f"{TEE_CPU_COUNT}",
         "--memory",
         f"{TEE_MEMORY_IN_MB}",
-        "--debug-mode",
         "--eif-path",
         f"{enclave_name}.eif",
     ]
