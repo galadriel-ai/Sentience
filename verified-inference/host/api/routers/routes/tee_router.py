@@ -39,6 +39,7 @@ async def deploy(
     return await tee_deploy_service.execute(
         request.enclave_name,
         request.docker_hub_image,
+        request.env_vars,
     )
 
 
