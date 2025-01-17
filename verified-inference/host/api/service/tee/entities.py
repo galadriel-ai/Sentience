@@ -1,5 +1,4 @@
-from typing import Any
-from typing import Dict
+from typing import Dict, List, Any
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -28,6 +27,10 @@ class TeeGetEnclaveResponse(BaseModel):
     enclave_name: str = Field(description="Enclave name")
     enclave_cid: int = Field(description="Enclave CID")
     enclave_status: str = Field(description="Enclave status")
+
+
+class TeeGetEnclavesResponse(BaseModel):
+    enclaves: List[TeeGetEnclaveResponse] = Field(description="List of enclaves")
 
 
 class TeeAttestationResponse(BaseModel):

@@ -15,6 +15,4 @@ async def execute(name: str) -> TeeGetEnclaveResponse:
             )
         raise HTTPException(status_code=404, detail=f"Enclave {name} not found")
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error deploying enclave: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")

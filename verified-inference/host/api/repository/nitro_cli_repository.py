@@ -4,7 +4,7 @@ from typing import Dict, List
 
 
 TEE_CPU_COUNT = 2
-TEE_MEMORY_IN_MB = 8192
+TEE_MEMORY_IN_MB = 16384
 
 
 def _run_command(command: list) -> str:
@@ -16,6 +16,8 @@ def _run_command(command: list) -> str:
             text=True,
             check=True,
         )
+        if result.stderr:
+            print(f"Error logs: {result.stderr.strip()}")
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {str(e)}")

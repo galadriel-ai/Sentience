@@ -1,4 +1,4 @@
-from repository import vsock_repository
+from repository.vsock_repository import request_attestation
 from domain.tee import get_all_enclaves_use_case
 
 
@@ -8,6 +8,7 @@ async def execute(enclave_name: str) -> str:
         raise Exception(f"Enclave {enclave_name} not found")
 
     enclave = enclaves[enclave_name]
-    response = await vsock_repository.request_attestation(enclave.cid)
+    print(f"Requesting attestation from enclave: {enclave_name}")
+    response = await request_attestation(enclave.cid)
 
     return response
