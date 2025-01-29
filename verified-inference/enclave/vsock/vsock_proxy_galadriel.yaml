@@ -1,0 +1,2 @@
+allowlist:
+  - { address: api.galadriel.com, port: 443 }

@@ -1,0 +1,2 @@
+allowlist:
+  - { address: discord.com, port: 443 }

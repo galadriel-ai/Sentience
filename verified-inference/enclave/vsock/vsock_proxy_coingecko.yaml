@@ -1,0 +1,2 @@
+allowlist:
+  - { address: api.coingecko.com, port: 443 }
