@@ -1,0 +1,2 @@
+allowlist:
+  - { address: api.telegram.org, port: 443 }

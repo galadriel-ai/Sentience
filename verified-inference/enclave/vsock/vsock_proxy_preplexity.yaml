@@ -1,0 +1,2 @@
+allowlist:
+  - { address: api.preplexity.ai, port: 443 }
