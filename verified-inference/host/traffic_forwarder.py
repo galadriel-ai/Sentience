@@ -77,9 +77,7 @@ class HostProxy:
             vsock_server.bind((self.CID, self.PORT))
             vsock_server.listen(10)
 
-            logger.info(
-                f"Host proxy listening on vsock {self.vsock_cid}:{self.vsock_port}"
-            )
+            logger.info(f"Host proxy listening on vsock {self.CID}:{self.PORT}")
 
             while True:
                 client_socket, _ = vsock_server.accept()

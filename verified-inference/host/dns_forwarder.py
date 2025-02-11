@@ -1,6 +1,11 @@
 import socket
+import logging
 
 VSOCK_PORT = 5053
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+logger = logging.getLogger()
 
 
 def get_system_dns():
@@ -11,7 +16,7 @@ def get_system_dns():
                 if line.startswith("nameserver"):
                     return line.split()[1], 53  # Extract the IP and set port 53
     except Exception as e:
-        print(f"Failed to get system DNS: {e}")
+        logger.error(f"Failed to get system DNS: {e}")
 
     return "8.8.8.8", 53  # Fallback to Google DNS if none found
 
@@ -31,13 +36,13 @@ def vsock_dns_proxy():
     server_socket = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
     server_socket.bind((socket.VMADDR_CID_ANY, VSOCK_PORT))
     server_socket.listen(5)
-    print(f"Listening for DNS requests on vsock port {VSOCK_PORT}...")
+    logger.info(f"Listening for DNS requests on vsock port {VSOCK_PORT}...")
     dns_ip, dns_port = get_system_dns()
-    print(f"Using DNS server {dns_ip}:{dns_port}")
+    logger.info(f"Using DNS server {dns_ip}:{dns_port}")
 
     while True:
         client_socket, _ = server_socket.accept()
-        print("Received DNS request from enclave.")
+        logger.info("Received DNS request from enclave.")
 
         try:
             # Receive the DNS request
@@ -47,7 +52,7 @@ def vsock_dns_proxy():
             # Send response back to enclave
             client_socket.sendall(dns_response)
         except Exception as e:
-            print(f"Error: {e}")
+            logger.error(f"Error: {e}")
         finally:
             client_socket.close()
 
