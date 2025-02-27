@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Request
+from fastapi.responses import StreamingResponse
 
 from service.tee.entities import (
     TeeAttestationResponse,
@@ -94,3 +95,19 @@ async def attestation(
     enclave_name: str,
 ):
     return await tee_attestation_service.execute(enclave_name)
+
+
+@router.get(
+    "/enclave/{enclave_name}/chat/completions",
+    summary="Stream chat completions from the enclave",
+    description="Stream chat completions from the specified enclave using SSE",
+    response_class=StreamingResponse,
+)
+async def stream_chat_completions(
+    api_request: Request,
+    enclave_name: str,
+):
+    return StreamingResponse(
+        content=tee_chat_service.execute(enclave_name),
+        media_type="text/event-stream",
+    )

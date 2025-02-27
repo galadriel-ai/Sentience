@@ -1,15 +1,13 @@
-import json
 from fastapi import HTTPException
 from service.tee.entities import TeeTerminateResponse
-from domain.tee import terminate_enclave_use_case
+from domain.tee import shutdown_enclave_use_case
 
 
 async def execute(
     name: str,
 ) -> TeeTerminateResponse:
     try:
-        result = await terminate_enclave_use_case.execute(name)
-
+        result = await shutdown_enclave_use_case.execute(name)
         return TeeTerminateResponse(result=result)
     except Exception as e:
         raise HTTPException(
