@@ -1,29 +1,53 @@
 import socket
+from enum import Enum
+from typing import Optional
 
 VSOCK_PORT = 8000
-GET_ATTESTATION_REQUEST = "GET_ATTESTATION_DOC"
 TIMEOUT_IN_SECONDS = 5
 BUFFER_SIZE = 4096
 
 
+class VsockRequestType(Enum):
+    GET_ATTESTATION = "GET_ATTESTATION_DOC"
+    SHUTDOWN = "SHUTDOWN"
+
+
 async def request_attestation(enclave_cid: int) -> str:
+    response = _send_request(
+        enclave_cid, VsockRequestType.GET_ATTESTATION, receive_response=True
+    )
+    if response is None:
+        raise Exception("No response received from attestation request")
+    return response
+
+
+async def shutdown(enclave_cid: int) -> bool:
+    response = _send_request(enclave_cid, VsockRequestType.SHUTDOWN)
+    if response is None:
+        raise Exception("No response received from shutdown request")
+    return True
+
+
+def _send_request(
+    enclave_cid: int,
+    request_type: VsockRequestType,
+    receive_response: bool = False,
+) -> Optional[str]:
+    vsock = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
     try:
-        vsock = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
         # Connect to the enclave
         vsock.connect((enclave_cid, VSOCK_PORT))
-
-        # Send a request for the attestation document
-        vsock.sendall(GET_ATTESTATION_REQUEST.encode())
-
-        # Set a timeout for the response
-        vsock.settimeout(TIMEOUT_IN_SECONDS)
-
-        # Receive the attestation document
-        response = vsock.recv(BUFFER_SIZE)
-
-        return response.decode()
+        # Send the request
+        vsock.sendall(request_type.value.encode())
+        if receive_response:
+            # Set a timeout for the response
+            vsock.settimeout(TIMEOUT_IN_SECONDS)
+            # Receive the response
+            response = vsock.recv(BUFFER_SIZE)
+            return response.decode()
+        return None
     except Exception as e:
-        print(f"Error requesting attestation: {e}")
+        print(f"Error in vsock communication: {e}")
         raise e
     finally:
         vsock.close()

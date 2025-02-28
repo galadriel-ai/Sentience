@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 from repository import nitro_cli_repository
 from domain.tee.entities import Enclave, EnclaveState
