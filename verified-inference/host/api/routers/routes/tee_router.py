@@ -17,6 +17,7 @@ from service.tee import (
     tee_terminate_service,
     tee_get_enclave_service,
     tee_get_all_enclaves_service,
+    tee_chat_service,
 )
 
 TAG = "TEE"
@@ -97,17 +98,18 @@ async def attestation(
     return await tee_attestation_service.execute(enclave_name)
 
 
-@router.get(
+@router.post(
     "/enclave/{enclave_name}/chat/completions",
     summary="Stream chat completions from the enclave",
     description="Stream chat completions from the specified enclave using SSE",
     response_class=StreamingResponse,
 )
 async def stream_chat_completions(
-    api_request: Request,
+    request: Request,
     enclave_name: str,
 ):
+    body = await request.body()
     return StreamingResponse(
-        content=tee_chat_service.execute(enclave_name),
+        content=tee_chat_service.execute(request, body, enclave_name),
         media_type="text/event-stream",
     )
