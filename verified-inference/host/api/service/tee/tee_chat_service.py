@@ -75,17 +75,13 @@ async def _vsock_stream_generator(
         full_path = f"{request_path}?{request_query}" if request_query else request_path
 
         # Build the HTTP request
-        http_request = f"{request_method} {full_path} HTTP/1.1\r\n"
+        http_request = f"{request_method} {full_path} HTTP/1.1\r\nHost: 127.0.0.1\r\n"
 
         # Add headers
         for name, value in headers.items():
             if name.lower() in ["host", "authorization"]:
                 continue
             http_request += f"{name}: {value}\r\n"
-
-        # Add content length if there's a body
-        if body:
-            http_request += f"Content-Length: {len(body)}\r\n"
 
         # End of headers
         http_request += "\r\n"
