@@ -22,7 +22,9 @@ async def request_attestation(enclave_cid: int) -> str:
 
 
 async def shutdown(enclave_cid: int) -> bool:
-    response = _send_request(enclave_cid, VsockRequestType.SHUTDOWN)
+    response = _send_request(
+        enclave_cid, VsockRequestType.SHUTDOWN, receive_response=True
+    )
     if response is None:
         raise Exception("No response received from shutdown request")
     return True

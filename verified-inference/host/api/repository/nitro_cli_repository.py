@@ -80,7 +80,7 @@ def _handle_insufficient_memory_error(enclave_name: str, error: NitroCLIError) -
     if min_memory:
         print(f"Retrying with minimum memory: {min_memory} MB")
         time.sleep(1)  # add a small delay to avoid immediate retry
-        return run_enclave(enclave_name, memory_mb=min_memory + 1024, retry=False)
+        return run_enclave(enclave_name, memory_mb=min_memory + 10, retry=False)
     raise error
 
 
