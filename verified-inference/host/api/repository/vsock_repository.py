@@ -1,3 +1,4 @@
+import errno
 import socket
 from enum import Enum
 from typing import Optional
@@ -22,9 +23,15 @@ async def request_attestation(enclave_cid: int) -> str:
 
 
 async def shutdown(enclave_cid: int) -> bool:
-    response = _send_request(
-        enclave_cid, VsockRequestType.SHUTDOWN, receive_response=True
-    )
+    try:
+        response = _send_request(
+            enclave_cid, VsockRequestType.SHUTDOWN, receive_response=True
+        )
+    except OSError as e:
+        if e.errno == errno.ENOTCONN:
+            # The enclave closed the connection, which is expected
+            return True
+        return False
     if response is None:
         raise Exception("No response received from shutdown request")
     return True

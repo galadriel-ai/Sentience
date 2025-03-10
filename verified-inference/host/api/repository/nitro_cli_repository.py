@@ -69,7 +69,7 @@ def _create_run_enclave_command(enclave_name: str, memory_mb: int) -> List[str]:
         f"{TEE_CPU_COUNT}",
         "--memory",
         f"{memory_mb}",
-        "--debug-mode",
+        # "--debug-mode",
         "--eif-path",
         f"{enclave_name}.eif",
     ]

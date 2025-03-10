@@ -20,7 +20,7 @@ class TeeTerminateRequest(BaseModel):
 
 
 class TeeTerminateResponse(BaseModel):
-    result: Dict = Field(description="Termination result")
+    result: bool = Field(description="Termination result")
 
 
 class TeeGetEnclaveResponse(BaseModel):
