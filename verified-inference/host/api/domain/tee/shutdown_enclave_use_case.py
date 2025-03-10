@@ -9,6 +9,6 @@ async def execute(enclave_name: str) -> bool:
 
     enclave = enclaves[enclave_name]
     print(f"Requesting shutdown from enclave: {enclave_name}")
-    shutdown_result = shutdown(enclave.cid)
+    shutdown_result = await shutdown(enclave.cid)
     print(f"Enclave shut down: {shutdown_result}")
     return shutdown_result
