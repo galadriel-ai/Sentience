@@ -12,3 +12,4 @@ verified-inference/enclave/.DS_Store
 **/**/node_modules
 SDKs/JS/dist
 **node_modules
+*.log

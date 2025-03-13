@@ -1,0 +1,9 @@
+
+httpx==0.28.1
+fastapi==0.115.6
+mypy==1.11.2
+pydantic==2.10.3
+pylint==3.2.7
+python-dotenv==1.0.1
+python-json-logger==2.0.7
+uvicorn==0.34.0

@@ -33,7 +33,6 @@ router.tags = [TAG]
     response_model=TeeDeploymentResponse,
 )
 async def deploy(
-    api_request: Request,
     request: TeeDeploymentRequest,
 ):
     return await tee_deploy_service.execute(
@@ -51,7 +50,6 @@ async def deploy(
     response_model=TeeTerminateResponse,
 )
 async def terminate(
-    api_request: Request,
     request: TeeTerminateRequest,
 ):
     return await tee_terminate_service.execute(request.enclave_name)
@@ -64,9 +62,7 @@ async def terminate(
     response_description="Returns all enclaves",
     response_model=TeeGetEnclavesResponse,
 )
-async def enclaves(
-    api_request: Request,
-):
+async def enclaves():
     return await tee_get_all_enclaves_service.execute()
 
 
@@ -78,7 +74,6 @@ async def enclaves(
     response_model=TeeGetEnclaveResponse,
 )
 async def enclave(
-    api_request: Request,
     enclave_name: str,
 ):
     return await tee_get_enclave_service.execute(enclave_name)
@@ -92,7 +87,6 @@ async def enclave(
     response_model=TeeAttestationResponse,
 )
 async def attestation(
-    api_request: Request,
     enclave_name: str,
 ):
     return await tee_attestation_service.execute(enclave_name)

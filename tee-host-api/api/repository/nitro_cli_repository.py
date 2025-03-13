@@ -4,6 +4,9 @@ from typing import Dict, List, Optional
 import re
 import time
 
+import api_logger
+
+logger = api_logger.get()
 
 TEE_CPU_COUNT = 2
 TEE_MEMORY_IN_MB_LOW = 4096
@@ -39,9 +42,10 @@ def _run_command(command: list) -> str:
             check=True,
         )
         if result.stderr:
-            print(f"Error logs: {result.stderr.strip()}")
+            logger.error(f"Error logs: {result.stderr.strip()}")
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
+        logger.error(f"Error running command: {command}\nError: {e}")
         error_message = e.stderr.strip()
         error_code = _parse_error_code(error_message)
         raise NitroCLIError(message=error_message, code=error_code) from e
@@ -78,7 +82,7 @@ def _create_run_enclave_command(enclave_name: str, memory_mb: int) -> List[str]:
 def _handle_insufficient_memory_error(enclave_name: str, error: NitroCLIError) -> Dict:
     min_memory = _parse_min_memory(error.message)
     if min_memory:
-        print(f"Retrying with minimum memory: {min_memory} MB")
+        logger.warning(f"Retrying with minimum memory: {min_memory} MB")
         time.sleep(1)  # add a small delay to avoid immediate retry
         return run_enclave(enclave_name, memory_mb=min_memory + 10, retry=False)
     raise error
@@ -108,6 +112,7 @@ def run_enclave(
         res = _run_command(command)
         return json.loads(res)
     except NitroCLIError as e:
+        logger.error(f"Error running enclave: {e}")
         if e.code == "E26" and retry:
             return _handle_insufficient_memory_error(enclave_name, e)
         raise
@@ -131,10 +136,3 @@ def describe_enclaves() -> List[Dict]:
     ]
     res = _run_command(command)
     return json.loads(res)
-
-
-if __name__ == "__main__":
-    try:
-        print(run_enclave("067988c3-6ede-7553-8000-e7d0807256bb", memory_mb=10000))
-    except NitroCLIError as e:
-        print(f"Caught an error: {e}")

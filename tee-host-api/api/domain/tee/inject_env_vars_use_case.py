@@ -3,6 +3,10 @@ import json
 import socket
 from typing import Dict, Any
 
+import api_logger
+
+logger = api_logger.get()
+
 ENCLAVE_ENV_VAR_RECEIVER_PORT = 3000
 CONNECTION_TIMEOUT = 30.0
 
@@ -11,17 +15,19 @@ async def execute(enclave_cid: int, env_vars: Dict[str, Any]) -> None:
     for i in range(10):
         try:
             response = _send_env_vars(enclave_cid, env_vars)
-            print(f"Enclave CID: {enclave_cid} - Send env vars response: {response}")
+            logger.info(
+                f"Enclave CID: {enclave_cid} - Send env vars response: {response}"
+            )
             return
         except socket.timeout:
-            print(f"Enclave CID: {enclave_cid} - Connection timed out.")
+            logger.error(f"Enclave CID: {enclave_cid} - Connection timed out.")
         except socket.error as e:
-            print(f"Enclave CID: {enclave_cid} - Socket error: {e}")
+            logger.error(f"Enclave CID: {enclave_cid} - Socket error: {e}")
         except Exception as e:
-            print(f"Enclave CID: {enclave_cid} - Unexpected error: {e}")
+            logger.error(f"Enclave CID: {enclave_cid} - Unexpected error: {e}")
         await asyncio.sleep(5)
-        print(f"Enclave CID: {enclave_cid} - Retrying..")
-    print(f"Enclave CID: {enclave_cid} - Failed to send env vars")
+        logger.warning(f"Enclave CID: {enclave_cid} - Retrying..")
+    logger.error(f"Enclave CID: {enclave_cid} - Failed to send env vars")
 
 
 def _send_env_vars(enclave_cid: int, env_vars: Dict[str, Any]) -> str:
