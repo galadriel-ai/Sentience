@@ -9,7 +9,7 @@ logger = api_logger.get()
 
 VSOCK_PORT = 8000
 TIMEOUT_IN_SECONDS = 5
-BUFFER_SIZE = 4096
+BUFFER_SIZE = 8192
 
 
 class VsockRequestType(Enum):
