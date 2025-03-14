@@ -1,12 +1,13 @@
 import asyncio
 import socket
-import httpx
 from typing import AsyncGenerator
-from fastapi import HTTPException
 from fastapi import Request
-from fastapi.responses import StreamingResponse
+
+import api_logger
 
 from domain.tee import get_all_enclaves_use_case
+
+logger = api_logger.get()
 
 VSOCK_PORT = 8001
 BUFFER_SIZE = 4096
@@ -134,7 +135,7 @@ async def _vsock_stream_generator(
             yield chunk_data
 
     except Exception as e:
-        print(f"Error streaming from VSOCK socket: {e}")
+        logger.error(f"Enclave CID: {cid} - Error streaming from VSOCK socket: {e}")
 
     finally:
         writer.close()

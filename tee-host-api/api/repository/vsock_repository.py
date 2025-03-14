@@ -3,6 +3,10 @@ import socket
 from enum import Enum
 from typing import Optional
 
+import api_logger
+
+logger = api_logger.get()
+
 VSOCK_PORT = 8000
 TIMEOUT_IN_SECONDS = 5
 BUFFER_SIZE = 8192
@@ -18,6 +22,7 @@ async def request_attestation(enclave_cid: int) -> str:
         enclave_cid, VsockRequestType.GET_ATTESTATION, receive_response=True
     )
     if response is None:
+        logger.error(f"Enclave CID: {enclave_cid} - No response received from attestation request")
         raise Exception("No response received from attestation request")
     return response
 
@@ -31,8 +36,10 @@ async def shutdown(enclave_cid: int) -> bool:
         if e.errno == errno.ENOTCONN:
             # The enclave closed the connection, which is expected
             return True
+        logger.error(f"Enclave CID: {enclave_cid} - Error shutting down enclave: {e}")
         return False
     if response is None:
+        logger.error(f"Enclave CID: {enclave_cid} - No response received from shutdown request")
         raise Exception("No response received from shutdown request")
     return True
 
@@ -56,7 +63,7 @@ def _send_request(
             return response.decode()
         return None
     except Exception as e:
-        print(f"Error in vsock communication: {e}")
+        logger.error(f"Error in vsock communication: {e}")
         raise e
     finally:
         vsock.close()

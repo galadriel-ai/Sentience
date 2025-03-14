@@ -1,10 +1,14 @@
 from typing import Any
 from typing import Dict
 from fastapi import HTTPException
+
+import api_logger
+
 from service.tee.entities import TeeDeploymentResponse
 from domain.tee import deploy_enclave_use_case
 from domain.tee import inject_env_vars_use_case
 
+logger = api_logger.get()
 
 async def execute(
     name: str, docker_hub_image: str, env_vars: Dict[str, Any]
@@ -14,6 +18,7 @@ async def execute(
         await inject_env_vars_use_case.execute(result["EnclaveCID"], env_vars)
         return TeeDeploymentResponse(result=result)
     except Exception as e:
+        logger.error(f"Enclave name: {name} - Error deploying enclave: {str(e)}")
         raise HTTPException(
             status_code=500, detail=f"Error deploying enclave: {str(e)}"
         )
